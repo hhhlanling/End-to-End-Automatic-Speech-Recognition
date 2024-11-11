@@ -21,7 +21,7 @@ def get_layers(context = 300, filt_length_conv_1 = 150, filt_length_conv_2 = 5,
 
     #tf.keras.layers.Input()用于构建网络的第一层——输入层
     #参数shape：输入的形状，tuple(元祖)类型。不含batch_size；tuple的元素可以为None类型数据，表示未知的或者说任意的，一般这里不用None 
-               #在Python中，元组（Tuple）是一种不可变的序列类型，它在功能上类似于列表（List），
+                #在Python中，元组（Tuple）是一种不可变的序列类型，它在功能上类似于列表（List），
                 #但有一个关键的区别：一旦创建，元组中的元素就不能被修改。
                 #这种不可变性使得元组在某些情况下比列表更适用，特别是在需要保证数据不被改变的场景中。
     #参数name：给layers起个名字，在整个网络中不能出现重名。如果name=None，则系统会自动为该层创建名字             
@@ -34,10 +34,21 @@ def get_layers(context = 300, filt_length_conv_1 = 150, filt_length_conv_2 = 5,
     # Append zeros in time for context at the beggining and end of audio sample 在音频样本的开始和结束处及时添加零
     #“ZeroPadding1D”的功能是对1D输入的首尾端（如时域序列）填充0，以控制卷积以后向量的长度
     #padding：整数，表示在要填充的轴的起始和结束处填充0的数目。从上文可知context是300
-    #(input_audio)就是指这个函数的输入变量，至于name = 'zero_padding_context'，也没出现过第二次，不知道干什么用的
-                
+    #(input_audio)就是指这个函数的输入变量，至于name = 'zero_padding_context'，也没出现过第二次，不知道干什么用的   
     input_audio_padded = layers.ZeroPadding1D(padding=(context), name = 'zero_padding_context')(input_audio)
 
+
+
+    '''
+    Conv1D 
+    1D 卷积层 (例如时序卷积)。
+    该层创建了一个卷积核，该卷积核对层输入进行卷积， 以生成输出张量。 
+    如果 use_bias 为 True， 则会创建一个偏置向量并将其添加到输出中。 
+    最后，如果 activation 不是 None，它也会应用于输出。
+    filter：输出空间的维度 （即卷积中滤波器的输出数量）。
+    Kernel_size：指定卷积窗口的大小。
+    Strides：指定卷积的步幅长度。
+    '''
     # Apply 1d filter: Shape [btch_sz, n_time, n_channels]
     filt_length_conv_1 = 2 * context + 1 + filt_length_conv_1
     conv = layers.Conv1D(number_filters_conv_1, filt_length_conv_1, strides=100, activation='relu', name="conv_1")(input_audio_padded)
